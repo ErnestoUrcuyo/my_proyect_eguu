@@ -4,12 +4,24 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const options = new DocumentBuilder()
+  const config = new DocumentBuilder()
     .setTitle('My API')
-    .setDescription('My API description')
+    .setDescription('Description of my API')
     .setVersion('1.0')
+    .addTag('api')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        in: 'header',
+        name: 'Authorization',
+        description: 'Enter your bearer token',
+      }
+    )
+    .addSecurityRequirements('bearer')
     .build();
-  const document = SwaggerModule.createDocument(app, options);
+  const document = SwaggerModule.createDocument(app, config);
 
   SwaggerModule.setup('api', app, document);
 
